@@ -6,47 +6,37 @@ using System.Collections.Specialized;
 public class ObjectShooter3D : MonoBehaviour
 {
 	[Header("Object creation")]
-
 	GameObject ui;
 	UIScript uIScript;
-
 	public GameObject prefabToSpawn;
-
 	// The key to press to create the objects/projectiles
 	public KeyCode keyToPress = KeyCode.Space;
-
 	[Header("Other options")]
-
-	public GameObject jalusta;
-	public GameObject pyssy;
+	public GameObject jalusta; //tähän voi laittaa itse ampujaobjektin, jos erillistä jalustaa ei ole
+	//Huom! Ampuminen vaatii, ettei ampuvalla osalla ole collideria
+	public GameObject pyssy; //tähän ohut lieriö makuulle peliobjektiin
 	public int ohjainNumber;
-	public int resourceToBeConsumed;
+	public int resourceToBeConsumed; // jos tarvitaan
 
 	// The rate of creation, as long as the key is pressed
 	public float creationRate = .5f;
-
 	// The speed at which the object are shot along the Y axis
 	public float shootSpeed = 5f;
-
 	public Vector3 shootDirection = new Vector3(1f, 1f, 1f);
-
 	public bool relativeToRotation = true;
-
 	private float timeOfLastSpawn;
-
 	// Will be set to 0 or 1 depending on how the GameObject is tagged
 	private int playerNumber;
-
 
 	// Use this for initialization
 	void Start ()
 	{
+		shootDirection = Vector3.forward;
 		timeOfLastSpawn = -creationRate;
-
 		// Set the player number based on the GameObject tag
 		playerNumber = (gameObject.CompareTag("Player")) ? 0 : 1;
-		ui = GameObject.Find("UI");
-		uIScript = ui.GetComponentInChildren<UIScript>();
+		//ui = GameObject.Find("UI");
+		//uIScript = ui.GetComponentInChildren<UIScript>();
 	}
 
 
@@ -55,9 +45,9 @@ public class ObjectShooter3D : MonoBehaviour
 	{
 		//checks if a certain resource is in the inventory, in the needed quantity
 		//public bool CheckIfHasResources(int resourceType, int amountNeeded = 1)
-		if (GameManager.ohjainNumero != ohjainNumber) return;
+		if (GameManager.ohjainNumero != ohjainNumber) return; //jos tarvitaan
 
-		if (!uIScript.CheckIfHasResources(resourceToBeConsumed, 1)) return;
+		//if (!uIScript.CheckIfHasResources(resourceToBeConsumed, 1)) return;
 
 		if (Input.GetKey(keyToPress)
 		   && Time.time >= timeOfLastSpawn + creationRate)
@@ -65,17 +55,16 @@ public class ObjectShooter3D : MonoBehaviour
 			UnityEngine.Debug.Log("AMPU TULEE!");
 			//Vector3 actualBulletDirection = (relativeToRotation) ? (Vector3)(Quaternion.Euler(15f, transform.eulerAngles.y, 40f) * shootDirection) : shootDirection;
 			//Vector3 actualBulletDirection = (relativeToRotation) ? (Vector3)(Quaternion.Euler(0f, transform.eulerAngles.y, 0f) * shootDirection) : shootDirection;
+			
 			Vector3 actualBulletDirection = (relativeToRotation) ? (Vector3)(Quaternion.Euler(0f, 0f, pyssy.transform.eulerAngles.z) * shootDirection) : shootDirection;
 
             //Vector3 actualBulletDirection = (Vector3)(Quaternion.Euler(0f, transform.eulerAngles.y, 0f) * shootDirection);
-
             //GameObject newObject = Instantiate<GameObject>(prefabToSpawn);
             //newObject.transform.position = this.transform.position; //ohjaimen sijainti
             //newObject.transform.eulerAngles = new Vector3(0f, Utils.Angle(actualBulletDirection), 0f);
 			//newObject.transform.eulerAngles = new Vector3(0f, Utils.Angle(actualBulletDirection), 0f);
 
-			GameObject newObject = Instantiate<GameObject>(prefabToSpawn, transform.position, transform.rotation);
-
+			GameObject newObject = Instantiate<GameObject>(prefabToSpawn, pyssy.transform.position, pyssy.transform.rotation);
 			//newObject.transform.eulerAngles = new Vector3(0f, 0f, -Utils.Angle(actualBulletDirection));
 
 			newObject.tag = "Bullet";
@@ -89,16 +78,13 @@ public class ObjectShooter3D : MonoBehaviour
 				//rigidbody.AddRelativeForce(jalusta.transform.rotation * actualBulletDirection * shootSpeed, ForceMode.Impulse);
 				//rigidbody.AddRelativeForce(actualBulletDirection * shootSpeed, ForceMode.Impulse);
 				//rigidbody.AddForce(shootSpeed * (Vector3)(Quaternion.Euler(0f, jalusta.transform.eulerAngles.y, 0f)), ForceMode.Impulse);
-
 				// rigidbody.AddForce((jalusta.transform.forward + actualBulletDirection) * shootSpeed, ForceMode.Impulse); //tätä tutkittava vielä
 
-				//rigidbody.AddForce((jalusta.transform.forward) * shootSpeed, ForceMode.Impulse); // toimii  y-akselin ympäri
+				rigidbody.AddForce((jalusta.transform.forward) * shootSpeed, ForceMode.Impulse); // toimii  y-akselin ympäri
 
-				rigidbody.AddForce(-(newObject.transform.forward) * shootSpeed, ForceMode.Impulse);
-
-				//rigidbody.AddForce(-(newObject.transform.forward + actualBulletDirection) * shootSpeed, ForceMode.Impulse); //toimii myös newObjectille asetettujen position ja rotation kanssa
-
-
+				//rigidbody.AddForce(-(newObject.transform.forward) * shootSpeed, ForceMode.Impulse);
+				//rigidbody.AddForce(-(newObject.transform.forward + actualBulletDirection) * shootSpeed, ForceMode.Impulse);
+				//toimii myös newObjectille asetettujen position ja rotation kanssa
 			}
 
 			// add a Bullet component if the prefab doesn't already have one, and assign the player ID
@@ -108,8 +94,6 @@ public class ObjectShooter3D : MonoBehaviour
 			//	b = newObject.AddComponent<BulletAttribute>();
 			//}
 			//b.playerId = playerNumber;
-
-
 
 			timeOfLastSpawn = Time.time;
 		}
