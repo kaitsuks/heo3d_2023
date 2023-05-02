@@ -10,7 +10,8 @@ public class ObjectShooter3D : MonoBehaviour
 	UIScript uIScript;
 	public GameObject prefabToSpawn;
 	// The key to press to create the objects/projectiles
-	public KeyCode keyToPress = KeyCode.Space;
+	//public KeyCode keyToPress = KeyCode.Space;
+	public KeyCode keyToPress = KeyCode.RightControl;
 	[Header("Other options")]
 	public GameObject jalusta; //tähän voi laittaa itse ampujaobjektin, jos erillistä jalustaa ei ole
 	//Huom! Ampuminen vaatii, ettei ampuvalla osalla ole collideria
@@ -31,7 +32,7 @@ public class ObjectShooter3D : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
-		shootDirection = Vector3.forward;
+		//shootDirection = Vector3.forward;
 		timeOfLastSpawn = -creationRate;
 		// Set the player number based on the GameObject tag
 		playerNumber = (gameObject.CompareTag("Player")) ? 0 : 1;
@@ -56,7 +57,7 @@ public class ObjectShooter3D : MonoBehaviour
 			//Vector3 actualBulletDirection = (relativeToRotation) ? (Vector3)(Quaternion.Euler(15f, transform.eulerAngles.y, 40f) * shootDirection) : shootDirection;
 			//Vector3 actualBulletDirection = (relativeToRotation) ? (Vector3)(Quaternion.Euler(0f, transform.eulerAngles.y, 0f) * shootDirection) : shootDirection;
 			
-			Vector3 actualBulletDirection = (relativeToRotation) ? (Vector3)(Quaternion.Euler(0f, 0f, pyssy.transform.eulerAngles.z) * shootDirection) : shootDirection;
+			Vector3 actualBulletDirection = (relativeToRotation) ? (Vector3)(Quaternion.Euler(0f, 0f, jalusta.transform.eulerAngles.z) * shootDirection) : shootDirection;
 
             //Vector3 actualBulletDirection = (Vector3)(Quaternion.Euler(0f, transform.eulerAngles.y, 0f) * shootDirection);
             //GameObject newObject = Instantiate<GameObject>(prefabToSpawn);
@@ -65,7 +66,7 @@ public class ObjectShooter3D : MonoBehaviour
 			//newObject.transform.eulerAngles = new Vector3(0f, Utils.Angle(actualBulletDirection), 0f);
 
 			GameObject newObject = Instantiate<GameObject>(prefabToSpawn, pyssy.transform.position, pyssy.transform.rotation);
-			//newObject.transform.eulerAngles = new Vector3(0f, 0f, -Utils.Angle(actualBulletDirection));
+			newObject.transform.eulerAngles = new Vector3(0f, 0f, -Utils.Angle(actualBulletDirection));
 
 			newObject.tag = "Bullet";
 

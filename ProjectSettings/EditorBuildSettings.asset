@@ -4,5 +4,14 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Tankki.unity
+    guid: c37c6cc4ad869d44bb1a8f56123450d2
+  - enabled: 1
+    path: Assets/Scenes/Test1.unity
+    guid: 1ced87293c6e398488303f20987ef1a9
+  - enabled: 1
+    path: Assets/Scenes/SampleScene.unity
+    guid: 9fc0d4010bbf28b4594072e72b8655ab
   m_configObjects: {}

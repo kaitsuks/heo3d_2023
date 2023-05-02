@@ -15,6 +15,7 @@ public class Wander3DB : Physics3DObject
 	public float speed = 5f;
 	public float directionChangeInterval = 3f;
 	public bool keepNearStartingPoint = true;
+	public float force = 1f;
 
 	[Header("Orientation")]
 	public bool orientToDirection = true;
@@ -23,6 +24,7 @@ public class Wander3DB : Physics3DObject
 
 	private Vector3 direction;
 	private Vector3 startingPoint;
+	Vector3 movement;
 
 	// Start is called at the beginning of the game
 	private void Start()
@@ -78,9 +80,14 @@ public class Wander3DB : Physics3DObject
 		//	that into a quaternion and assign it in your Update function and you're done;
 		//alien.transform.rotation = Quaternion.LookRotation(movementDirection);
 		//If you want the transition to be smoother, you can interpolate the rotation as well;
-		//alien.transform.rotation = Quaternion.Slerp(alien.transform.rotation, Quaternion.LookRotation(movementDirection), Time.deltaTime * 40f);
 
+		//transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), Time.deltaTime * 40f);
 		transform.rotation = Quaternion.LookRotation(direction);
+
+		// Calculate the rotation
+		//Quaternion rotationChange = Quaternion.Euler(0, direction.y * speed * Time.deltaTime, 0);
+		//muutetaan rotation
+		//rigidbody.MoveRotation(rigidbody.rotation * rotationChange);
 
 		// Move the object forward along its z axis, speed units/second.
 		transform.Translate(Vector3.forward * Time.deltaTime * speed);
@@ -89,7 +96,13 @@ public class Wander3DB : Physics3DObject
 
     // FixedUpdate is called every frame when the physics are calculated
     private void FixedUpdate()
-	{	//Physics version with force
-		//rigidbody.AddForce(direction * speed);
+	{   //Physics version with force
+		//rigidbody.AddForce(Vector3.forward * speed * 5f);
+
+		direction = transform.forward; // Use the object's forward direction
+		direction.Normalize(); // Normalize the direction vector
+		movement = direction * speed; // 
+		//rigidbody.AddRelativeForce(movement * force); // Apply the force in the relative direction
+		// rigidbody.AddForce(movement * force); // Apply the force in the  direction
 	}
 }
